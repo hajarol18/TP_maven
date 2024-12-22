@@ -1,0 +1,102 @@
+import org.junit.Test;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class PersonIteratorTest {
+
+    @Test
+    public void testRemoveWithoutIterator_ShouldThrowException() {
+        Set<Person> people = new HashSet<>();
+        people.add(new Person(1, "Alice"));
+        people.add(new Person(2, "Bob"));
+        people.add(new Person(3, "Charlie"));
+
+        boolean exceptionThrown = false;
+        try {
+            for (Person person : people) {
+                if (person.getName().equals("Bob")) {
+                    people.remove(person); 
+                }
+            }
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+
+        assertThat(exceptionThrown).isTrue();
+    }
+
+    @Test
+    public void testRemoveWithIterator_ShouldRemoveCorrectly() {
+        Set<Person> people = new HashSet<>();
+        people.add(new Person(1, "Alice"));
+        people.add(new Person(2, "Bob"));
+        people.add(new Person(3, "Charlie"));
+
+        Iterator<Person> iterator = people.iterator();
+        while (iterator.hasNext()) {
+            Person person = iterator.next();
+            if (person.getName().equals("Bob")) {
+                iterator.remove(); 
+            }
+        }
+
+        assertThat(people).hasSize(2);
+        assertThat(people).containsExactlyInAnyOrder(
+            new Person(1, "Alice"),
+            new Person(3, "Charlie")
+        );
+    }
+
+    @Test
+    public void testRemoveWithoutIteratorMethod_ShouldThrowException() {
+        Set<Person> people = new HashSet<>();
+        people.add(new Person(1, "Alice"));
+        people.add(new Person(2, "Bob"));
+        people.add(new Person(3, "Charlie"));
+
+        boolean exceptionThrown = false;
+        try {
+            removeWithoutIterator(people, "Bob");
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+
+        assertThat(exceptionThrown).isTrue();
+    }
+
+    @Test
+    public void testRemoveWithIteratorMethod_ShouldRemoveCorrectly() {
+        Set<Person> people = new HashSet<>();
+        people.add(new Person(1, "Alice"));
+        people.add(new Person(2, "Bob"));
+        people.add(new Person(3, "Charlie"));
+
+        removeWithIterator(people, "Bob");
+
+        assertThat(people).hasSize(2);
+        assertThat(people).containsExactlyInAnyOrder(
+            new Person(1, "Alice"),
+            new Person(3, "Charlie")
+        );
+    }
+
+    private void removeWithoutIterator(Set<Person> people, String name) {
+        for (Person person : people) {
+            if (person.getName().equals(name)) {
+                people.remove(person);
+            }
+        }
+    }
+
+    private void removeWithIterator(Set<Person> people, String name) {
+        Iterator<Person> iterator = people.iterator();
+        while (iterator.hasNext()) {
+            Person person = iterator.next();
+            if (person.getName().equals(name)) {
+                iterator.remove();
+            }
+        }
+    }
+}
